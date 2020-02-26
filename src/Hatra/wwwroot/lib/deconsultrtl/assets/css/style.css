@@ -4727,7 +4727,7 @@ button.tm-videobutton {
 
 .tm-blog-content {
     padding: 30px 20px;
-}
+    }
 
     .tm-blog-content h3 {
         margin-bottom: 10px;
@@ -7966,4 +7966,8 @@ ul.pricing {
     #vmapDetail {
         right: -87px;
     }
+}
+
+.border-3 {
+    border-width: 3px !important;
 }
