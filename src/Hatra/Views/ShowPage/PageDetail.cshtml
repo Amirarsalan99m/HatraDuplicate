@@ -25,7 +25,7 @@
         }
 
         $('.carousel').carousel({
-  interval: 3000
+  interval: 5000
         })
 
         $(function() {
@@ -66,7 +66,26 @@
                             @*<a href="#">*@
                             @if (!string.IsNullOrWhiteSpace(Model.Image))
                             {
-                                <img src="@Model.Image" alt="@Model.Title" onerror="this.style.display = 'none'">
+                                <div class="heroslider-single" data-bgimage="@Model.Image" data-black-overlay="8" style="background-image: url(&quot;/UploadedFiles/Files/da2a928eda824a9db252e06de52ee7a5.jpg&quot;); min-height: calc(-57.5px + 100vh);">
+                                    <div class="container">
+                                        <div class="row justify-content-center">
+                                            <div class="col-xl-8 col-lg-10">
+                                                <div class="heroslider-content text-center" style="transform: translate(0px) translateZ(30px);">
+                                                    <div class="heroslider-animatebox">
+                                                        <h1>
+                                                            <span>نرم افزار حسابداری هاترا</span>
+                                                            <b class="pt-2 pb-2 text-center">@Model.Title</b>
+                                                        </h1>
+                                                    </div>
+                                                    <div class="heroslider-animatebox">
+                                                        <p>@Model.BriefDescription</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<img src="@Model.Image" alt="@Model.Title" onerror="this.style.display = 'none'">*@
                             }
                             else
                             {
@@ -162,11 +181,6 @@
                                     </div>
                                 </div>
                             </div>*@
-
-
-
-
-
 
 
 
