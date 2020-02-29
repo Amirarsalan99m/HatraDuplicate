@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using SixLabors.ImageSharp.Processing;
 
 namespace Hatra.FileUpload
 {
+
     public class CommandResult
     {
         public List<ViewDataUploadFilesResult> FileResults { get; private set; } = new List<ViewDataUploadFilesResult>();
@@ -29,7 +31,6 @@ namespace Hatra.FileUpload
 
         //    public List<IFormFile> Files { get; private set; } = new List<IFormFile>();
         //}
-
         private readonly FilesHelper _filesHelper;
 
         public FileUploadUtilities(FilesHelper filesHelper)
@@ -161,7 +162,13 @@ namespace Hatra.FileUpload
                             thumb.Save(Path.Combine(_filesHelper.StorageRootPath, THUMBS_FOLDER_NAME,
                                 $"{fileName}{ImageConstants.ThumbWidth90}x{ImageConstants.ThumbHeight81}{extension}"));
                         }
+
+                        //File.Copy(Path.Combine(_filesHelper.StorageRootPath, fileName + extension), Path.Combine(_filesHelper.StorageRootPath, fileName + ".bak" + extension), true);
+
+                        VariousQuality(System.Drawing.Image.FromFile(Path.Combine(_filesHelper.StorageRootPath, fileName + extension)), Path.Combine(_filesHelper.StorageRootPath, fileName));
+
                     }
+
 
                     // If the image is wider than 540px, resize it so that it is 540px wide. Otherwise, upload a copy of the original.
                     //using (var originalImage = Image.Load(fullPath))
@@ -187,6 +194,8 @@ namespace Hatra.FileUpload
                 }
 
                 result.FileResults.Add(UploadResult(isImage ? fileName + extension : fileName, extension, file.Length));
+
+                
             }
         }
 
@@ -250,6 +259,36 @@ namespace Hatra.FileUpload
 
             return result;
         }
-    }
 
+        static void VariousQuality(System.Drawing.Image original, string ImgPath)
+        {
+            ImageCodecInfo jpgEncoder = null;
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == ImageFormat.Jpeg.Guid)
+                {
+                    jpgEncoder = codec;
+                    break;
+                }
+            }
+            if (jpgEncoder != null)
+            {
+                Encoder encoder = Encoder.Quality;
+                EncoderParameters encoderParameters = new EncoderParameters(1);
+
+                for (long quality = 10; quality <= 100; quality += 10)
+                {
+                    EncoderParameter encoderParameter = new EncoderParameter(encoder, quality);
+                    encoderParameters.Param[0] = encoderParameter;
+
+                    string fileOut = ImgPath + "quality" + quality + ".jpeg";
+                    FileStream ms = new FileStream(fileOut, FileMode.Create, FileAccess.Write);
+                    original.Save(ms, jpgEncoder, encoderParameters);
+                    ms.Flush();
+                    ms.Close();
+                }
+            }
+        }
+    }
 }
